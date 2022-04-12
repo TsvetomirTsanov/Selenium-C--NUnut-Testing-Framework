@@ -32,15 +32,13 @@ namespace NunitProject.other.CustomControls
         {
             this.ElementHelper.ScrollToView(this.RightChevron);
             this.RightChevron.Click();
-            this.LeftVisibleElementIndex = LeftVisibleElementIndex == this.ElementsCount - 1 ? 0 : LeftVisibleElementIndex + 1;
-            this.RightVisibleElementIndex = RightVisibleElementIndex == this.ElementsCount - 1 ? 0 : RightVisibleElementIndex + 1;
+            this.SetIndexesOnLeftSwipe(1);
         }
 
         public void SwipeRight()
         {
             this.LeftChevron.Click();
-            this.LeftVisibleElementIndex = LeftVisibleElementIndex == 0 ? this.ElementsCount - 1 : LeftVisibleElementIndex - 1;
-            this.RightVisibleElementIndex = RightVisibleElementIndex == 0 ? this.ElementsCount - 1 : RightVisibleElementIndex - 1;
+            this.SetIndexesOnRightSwipe(1);
         }
 
         public void DragAndDropToRight(int slideSteps)
@@ -55,13 +53,12 @@ namespace NunitProject.other.CustomControls
 
             this.ElementHelper.DragAndDropElement(sourceElement, targetElement);
 
-            this.LeftVisibleElementIndex = LeftVisibleElementIndex - slideSteps < 0 ? this.ElementsCount + (LeftVisibleElementIndex - slideSteps) - 1 : LeftVisibleElementIndex - slideSteps;
-            this.RightVisibleElementIndex = RightVisibleElementIndex - slideSteps < 0 ? this.ElementsCount + (RightVisibleElementIndex - slideSteps) - 1 : RightVisibleElementIndex - slideSteps;
+            this.SetIndexesOnRightSwipe(slideSteps);
         }
 
         public void DragAndDropToLeft(int slideSteps)
         {
-            if (slideSteps >= this.MaxVisibleElements)
+            if (slideSteps >= this.MaxVisibleElements - 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(slideSteps));
             }
@@ -71,8 +68,7 @@ namespace NunitProject.other.CustomControls
 
             this.ElementHelper.DragAndDropElement(sourceElement, targetElement);
 
-            this.LeftVisibleElementIndex = LeftVisibleElementIndex + slideSteps >= this.ElementsCount ? (LeftVisibleElementIndex + slideSteps) - this.ElementsCount : LeftVisibleElementIndex + slideSteps;
-            this.RightVisibleElementIndex = RightVisibleElementIndex + slideSteps >= this.ElementsCount ? (RightVisibleElementIndex + slideSteps) - this.ElementsCount : RightVisibleElementIndex + slideSteps;
+            this.SetIndexesOnLeftSwipe(slideSteps);
         }
 
         public List<IWebElement> GetVisibleSlides()
@@ -86,6 +82,18 @@ namespace NunitProject.other.CustomControls
             this.RightVisibleElementIndex = maxElements - 1;
             this.ElementsCount = this.AllSlides.Count();
             this.MaxVisibleElements = maxElements;
+        }
+
+        private void SetIndexesOnLeftSwipe(int step)
+        {
+            this.LeftVisibleElementIndex = this.LeftVisibleElementIndex + step >= this.ElementsCount ? this.ElementsCount + (this.LeftVisibleElementIndex - step) : this.LeftVisibleElementIndex + step;
+            this.RightVisibleElementIndex = this.RightVisibleElementIndex + step >= this.ElementsCount ? this.ElementsCount + (this.RightVisibleElementIndex - step) : this.RightVisibleElementIndex + step;
+        }
+
+        private void SetIndexesOnRightSwipe(int step)
+        {
+            this.LeftVisibleElementIndex = this.LeftVisibleElementIndex - step < 0 ? this.ElementsCount + (this.LeftVisibleElementIndex - step) : this.LeftVisibleElementIndex - step;
+            this.RightVisibleElementIndex = this.RightVisibleElementIndex - step < 0 ? this.ElementsCount + (this.RightVisibleElementIndex - step) : this.RightVisibleElementIndex - step;
         }
     }
 }

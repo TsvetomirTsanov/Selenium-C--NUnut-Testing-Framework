@@ -26,9 +26,9 @@ namespace NunitProject.other
             return webElement;
         }
 
-        public IWebElement Find(By by, ToBe until)
+        public IWebElement Find(By by, ToBe condition)
         {
-            this.WaitForElement(until, by);
+            this.WaitForElement(condition, by);
             return this.Find(by);
         }
 
@@ -39,9 +39,9 @@ namespace NunitProject.other
             return webElements;
         }
 
-        public IEnumerable<IWebElement> FindAll(By by, ToBe until)
+        public IEnumerable<IWebElement> FindAll(By by, ToBe condition)
         {
-            this.WaitForElements(until, by);
+            this.WaitForElements(condition, by);
             return this.FindAll(by);
         }
 
@@ -50,14 +50,14 @@ namespace NunitProject.other
             return this.FindAll(by).Count() > 0;
         }
 
-        public void WaitForElement(ToBe until, By by)
+        public void WaitForElement(ToBe condition, By by)
         {
-            this.WaitForCondition(until, by);
+            this.WaitForCondition(condition, by);
         }
 
-        public void WaitForElements(ToBe until, By by)
+        public void WaitForElements(ToBe condition, By by)
         {
-            this.WaitForCondition(until, by);
+            this.WaitForCondition(condition, by);
         }
 
         public void WaitForPageToLoad()
@@ -152,7 +152,7 @@ namespace NunitProject.other
 
         public void DragAndDropElement(IWebElement sourceElement, IWebElement targetElement)
         {
-            var builder = new Actions(Driver);
+            var builder = new Actions(this.Driver);
             var dragAndDrop = builder.ClickAndHold(sourceElement).MoveToElement(targetElement).Release(sourceElement).Build();
             dragAndDrop.Perform();
         }
